@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no,user-scalable=no,minimum-scale=1,maximum-scale=1">
+		<title>图片识别</title>
+		<style>body{margin:0 auto;width:500px;font-size:12px;font-family:"arial, helvetica, sans-serif"}fieldset{margin-bottom:10%;border:1px solid #ddd;border-radius:5px}img,select,button{cursor:pointer}img{background:#ddd}h2{font-weight:500;font-size:16px}fieldset legend{margin-left:33%}</style>
+	</head>
+
+	<body>
+
+		<fieldset>
+			<legend>
+				<h2> 图片识别前 </h2>
+			</legend>
+			选择文件：<img src="img/1.png" title="图片" />
+			<p>
+				选择语言：
+				<select id="langsel" onchange="recognizeFile()">
+					<option value='afr'> 南非荷兰语（Afrikaans） </option>
+					<option value='ara'> 阿拉伯 （Arabic）</option>
+					<option value='aze'> 阿塞拜疆 （Azerbaijani） </option>
+					<option value='bel'> 白俄罗斯（美式：Belarusian） </option>
+					<option value='ben'> 孟加拉（Bengali） </option>
+					<option value='bul'> 保加利亚语（Bulgarian） </option>
+					<option value='cat'> 西班牙 （Catalan）</option>
+					<option value='ces'> 捷克（Czech） </option>
+					<option value='chi_sim' selected> 中文（Chinese） </option>
+					<option value='chi_tra'> 繁体中文（Traditional Chinese） </option>
+					<option value='chr'> Cherokee </option>
+					<option value='dan'> 丹麦语（Danish） </option>
+					<option value='deu'> 德语（German） </option>
+					<option value='ell'> 希腊语（Greek） </option>
+					<option value='eng'> 英语（English） </option>
+					<option value='enm'> 英文（老）（English (Old)） </option>
+					<option value='meme'> Internet Meme </option>
+					<option value='epo'> Esperanto </option>
+					<option value='epo_alt'> （Esperanto alternative）</option>
+					<option value='equ'> Math </option>
+					<option value='est'> Estonian </option>
+					<option value='eus'> 爱沙尼亚语（Basque） </option>
+					<option value='fin'> （Finnish） </option>
+					<option value='fra'> 芬兰（French） </option>
+					<option value='frk'> Frankish </option>
+					<option value='frm'> 法语（老）（French (Old)） </option>
+					<option value='glg'> 加利西亚（Galician） </option>
+					<option value='grc'> Ancient Greek </option>
+					<option value='heb'> Hebrew </option>
+					<option value='hin'> Hindi </option>
+					<option value='hrv'> Croatian </option>
+					<option value='hun'> Hungarian </option>
+					<option value='ind'> Indonesian </option>
+					<option value='isl'> Icelandic </option>
+					<option value='ita'> 意大利（Italian） </option>
+					<option value='ita_old'> 意大利语（老）（Italian (Old)） </option>
+					<option value='jpn'> 日本（Japanese） </option>
+					<option value='kan'> Kannada </option>
+					<option value='kor'> 朝鲜的（Korean） </option>
+					<option value='lav'> Latvian </option>
+					<option value='lit'> Lithuanian </option>
+					<option value='mal'> Malayalam </option>
+					<option value='mkd'> Macedonian </option>
+					<option value='mlt'> Maltese </option>
+					<option value='msa'> Malay </option>
+					<option value='nld'> Dutch </option>
+					<option value='nor'> Norwegian </option>
+					<option value='pol'> Polish </option>
+					<option value='por'> 葡萄牙语（Portuguese） </option>
+					<option value='ron'> Romanian </option>
+					<option value='rus'> 俄语（Russian） </option>
+					<option value='slk'> Slovakian </option>
+					<option value='slv'> Slovenian </option>
+					<option value='spa'> 西班牙语（Spanish） </option>
+					<option value='spa_old'>老西班牙语 （Old Spanish） </option>
+					<option value='sqi'> Albanian </option>
+					<option value='srp'> 塞尔维亚语（拉丁语）（Serbian (Latin)） </option>
+					<option value='swa'> Swahili </option>
+					<option value='swe'> Swedish </option>
+					<option value='tam'> Tamil </option>
+					<option value='tel'> Telugu </option>
+					<option value='tgl'> Tagalog </option>
+					<option value='tha'> 泰国（Thai） </option>
+					<option value='tur'> 土耳其（Turkish） </option>
+					<option value='ukr'> 乌克兰（乌克兰） </option>
+					<option value='vie'> 越南（Vietnamese） </option>
+				</select>
+			</p>
+			<p align="center">
+				<button onclick="btn()">执行</button>
+			</p>
+		</fieldset>
+		<fieldset>
+			<legend>
+				<h2> 输出结果 </h2>
+			</legend>
+			<div id="result"></div>
+		</fieldset>
+	</body>
+	<script src='img/tesseract.js'></script>
+	<script>
+		var src = document.querySelector("img").src,
+			selectOption = "",
+			result = document.querySelector("#result");
+
+		function recognizeFile() {
+			var select = document.querySelector("#langsel")
+			selectOption = select.options[select.selectedIndex].value;
+		}
+
+		function btn() {
+
+			Tesseract.recognize(src, {
+					lang: selectOption ? selectOption : "chi_sim",
+				}).progress(function(message) {
+					console.log(message)
+				})
+				.catch(function(err) {
+					result.innerHTML = err;
+					console.error(err)
+				})
+				.then(function(result) {
+					console.log(result.text)
+					result.value = result.text;
+				})
+				.finally(function(resultOrError) {
+					result.innerHTML = resultOrError.value;
+					console.log(resultOrError)
+				})
+		}
+	</script>
+
+</html>
