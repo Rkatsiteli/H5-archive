@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title></title>
+		<meta charset="utf-8" />
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js
+"></script>
+	</head>
+
+	<body>
+		<input type="button" value="全部下载" onclick="doAllDownload()" />
+		<div>
+			<ul>
+				<li>
+					<span>文件1.txt</span>&nbsp;&nbsp;<span id="progress1"></span>
+				</li>
+				<li>
+					<span>文件2.txt</span>&nbsp;&nbsp;<span id="progress2"></span>
+				</li>
+				<li>
+					<span>文件3.txt</span>&nbsp;&nbsp;<span id="progress3"></span>
+				</li>
+			</ul>
+		</div>
+		<script>
+			function doAllDownload() {
+				var files = [{
+					url: 'Test/文件1.txt',
+					id: 'progress1'
+				}, {
+					url: 'Test/文件2.txt',
+					id: 'progress2'
+				}, {
+					url: 'Test/文件3.txt',
+					id: 'progress3'
+				}];
+				files.forEach(function(item) {
+					//多文件下载
+					DownloadFile(item.url).then(function(result) {
+						//请求完成
+						var msg = "文件下载完毕！";
+						if(result.error) {
+							msg = result.error.message ? result.error.message : "文件下载错误！";
+						}
+						$("#" + item.id).html(msg);
+					}, function(err) {}, function(evt) {
+						//根据item处理进度条数据
+						$("#" + item.id).html("已下载 " + parseInt(100 * evt.loaded / evt.total) + "%");
+					});
+				})
+			}
+
+			function DownloadFile(url) {
+				var filename = url.substr(url.lastIndexOf('\\') + 1); //文件名
+				var dfd = new $.Deferred();
+				var promise = $.ajax("http://localhost:8080/api/Test/DownloadFileUrl", {
+					type: "POST",
+					contentType: 'application/json',
+					data: JSON.stringify({
+						url: url
+					}),
+					/*JQuery 3.0以下版本不支持*/
+					xhrFields: {
+						responseType: 'arraybuffer',
+						onprogress: dfd.notify //触发dfd.process事件
+					}
+				});
+				promise.then(function(data, status, xhr) {
+					if(xhr.statusText == "OK") {
+						var type = xhr.getResponseHeader('Content-Type');
+						var blob = new Blob([data], {
+							type: type
+						});
+						if(typeof window.navigator.msSaveBlob !== 'undefined') {
+							window.navigator.msSaveBlob(blob, filename);
+						} else {
+							var URL = window.URL || window.webkitURL;
+							var downloadUrl = URL.createObjectURL(blob);
+							if(filename) {
+								var a = document.createElement("a");
+								if(typeof a.download === 'undefined') {
+									window.location = downloadUrl;
+								} else {
+									a.href = downloadUrl;
+									a.download = filename;
+									document.body.appendChild(a);
+									a.click();
+								}
+							} else {
+								window.location = downloadUrl;
+							}
+
+							setTimeout(function() {
+								URL.revokeObjectURL(downloadUrl);
+								dfd.resolve({});
+							}, 100);
+						}
+					} else {
+						dfd.resolve({
+							error: {
+								message: xhr.statusText
+							}
+						});
+					}
+				}, function(err) {
+					//异常处理
+				}, function(info) {
+					//不支持Deferred的process事件
+				});
+				return dfd;
+			}
+		</script>
+	</body>
+
+</html>

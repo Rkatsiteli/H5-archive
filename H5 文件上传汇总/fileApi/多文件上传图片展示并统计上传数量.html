@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	</head>
+
+	<body>
+		<style>
+			.thumb {
+				height: 75px;
+				border: 1px solid #000;
+				margin: 10px 5px 0 0;
+			}
+		</style>
+
+		<input type="file" id="files" name="files[]" multiple />
+		<output id="list"></output>
+
+		<script>
+			function handleFileSelect(evt) {
+				var files = evt.target.files; // 文件列表对象
+
+				// 通过文件列表和渲染的图像文件的缩略图环。
+				for(var i = 0, f; f = files[i]; i++) {
+
+					// Only process image files.
+					if(!f.type.match('image.*')) {
+						continue;
+					}
+
+					var reader = new FileReader();
+
+					// 关闭捕获文件信息。
+					reader.onload = (function(theFile) {
+						return function(e) {
+							// 渲染缩略图。
+							var span = document.createElement('span');
+							span.innerHTML = ['<img class="thumb" src="', e.target.result,
+								'" title="', escape(theFile.name), '"/>'
+							].join('');
+							document.getElementById('list').insertBefore(span, null);
+						};
+					})(f);
+
+					// 将图像文件读入数据URL。
+					reader.readAsDataURL(f);
+				}
+			}
+
+			document.getElementById('files').addEventListener('change', handleFileSelect, false);
+		</script>
+	</body>
+
+</html>

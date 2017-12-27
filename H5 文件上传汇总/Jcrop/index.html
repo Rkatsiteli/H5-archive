@@ -1,0 +1,155 @@
+<html lang="en">
+
+	<head>
+		<title>图片裁剪</title>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery.Jcrop.js"></script>
+		<link rel="stylesheet" href="css/jquery.Jcrop.css" type="text/css" />
+		<style type="text/css">
+			.jc-demo-box {
+				text-align: left;
+				margin: 2em auto;
+				background: white;
+				border: 1px #bbb solid;
+				-webkit-border-radius: 4px;
+				-moz-border-radius: 4px;
+				border-radius: 4px;
+				-webkit-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.25);
+				-moz-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.25);
+				box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.25);
+				padding: 1em 2em 2em;
+			}
+			
+			.jcrop-holder #preview-pane {
+				display: block;
+				position: absolute;
+				z-index: 2000;
+				top: 10px;
+				right: -86%;
+				padding: 6px;
+				border: 1px rgba(0, 0, 0, .4) solid;
+				background-color: white;
+				-webkit-border-radius: 6px;
+				-moz-border-radius: 6px;
+				border-radius: 6px;
+				-webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+				-moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+				box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+			}
+			
+			#preview-pane .preview-container {
+				width: 300px;
+				height: 220px;
+				overflow: hidden;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<div class="jc-demo-box">
+			<input type="file" onchange="chageFile(this)" />
+			<p>
+				<img src="" id="target" />
+				<div id="preview-pane">
+					<div class="preview-container">
+						<img src="" />
+					</div>
+				</div>
+			</p>
+			<button id="btns">生成</button>
+
+		</div>
+		<canvas id="canvas"></canvas>
+	</body>
+	<script>
+		var d = document,
+			q = "querySelector",
+			t = "getElementsByTagName";
+
+		function chageFile(e) {
+
+			var file = e.files[0] // 获取input上传的图片数据;
+			var url = window.URL.createObjectURL(file)
+
+			var imgList = d[t]("img")
+			for(var i = 0; len = imgList.length, i < len; i++) {
+				imgList[i].src = url;
+			};
+			Jcrop();
+		}
+
+		function Jcrop() {
+			// 在这个范围内创建变量来保存API和图像大小
+			var jcrop_api,
+				boundx,
+				boundy,
+				// 获取关于预览窗格的一些信息
+				$preview = $('#preview-pane'),
+				$pcnt = $('#preview-pane .preview-container'),
+				$pimg = $('#preview-pane .preview-container img'),
+
+				xsize = $pcnt.width(),
+				ysize = $pcnt.height();
+
+			$('#target').Jcrop({
+				onChange: updatePreview,
+				onSelect: updatePreview,
+				aspectRatio: xsize / ysize,
+				boxWidth: 500,
+				boxHeight: 500,
+				maxSize: [500, 500],
+			}, function() {
+				// 使用API获取真正的图像大小
+				var bounds = this.getBounds();
+				boundx = bounds[0];
+				boundy = bounds[1];
+				// 在jcrop_api变量存储API
+				jcrop_api = this;
+
+				//移动预览CSS定位的Jcrop实现对集装箱
+				$preview.appendTo(jcrop_api.ui.holder);
+			});
+			setTimeout(function() {
+				jcrop_api.animateTo([0, 0, 500, 500])
+			}, 10);
+
+			function updatePreview(c) {
+				if(parseInt(c.w) > 0) {
+					var rx = xsize / c.w;
+					var ry = ysize / c.h;
+
+					$pimg.css({
+						width: Math.round(rx * boundx) + 'px',
+						height: Math.round(ry * boundy) + 'px',
+						marginLeft: '-' + Math.round(rx * c.x) + 'px',
+						marginTop: '-' + Math.round(ry * c.y) + 'px'
+					});
+				}
+			};
+
+			d[q]("#btns").onclick = function() {
+
+				var ev = jcrop_api.tellSelect();
+				console.log(ev)
+				var canvas = d[q]("#canvas");
+				var x = Math.round(ev.x);
+				var y = Math.round(ev.y);
+				var x2 = Math.round(ev.x2);
+				var y2 = Math.round(ev.y2);
+
+				canvas.width = ev.w;
+				canvas.height = ev.h;
+
+				var ctx = canvas.getContext('2d');
+
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				ctx.drawImage($pimg[0], x, y, x2 - x, y2 - y, 0, 0, canvas.width, canvas.height);
+				canvas.toDataURL('image/jpeg', 1);
+			}
+
+		}
+	</script>
+
+</html>

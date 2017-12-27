@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<title></title>
+		<style>
+			.example {
+				padding: 10px;
+				border: 1px solid #ccc;
+			}
+			
+			#drop_zone {
+				border: 2px dashed #bbb;
+				-moz-border-radius: 5px;
+				-webkit-border-radius: 5px;
+				border-radius: 5px;
+				padding: 25px;
+				text-align: center;
+				font: 20pt bold 'Vollkorn';
+				color: #bbb;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="example">
+			<div id="drop_zone">将文件拖放到此处</div>
+			<output id="list"></output>
+		</div>
+
+		<script>
+			function handleFileSelect(evt) {
+				evt.stopPropagation();
+				evt.preventDefault();
+
+				var files = evt.dataTransfer.files; // FileList object.
+
+				// 文件是一个文件列表文件对象。列出一些属性。
+				var output = [];
+				for(var i = 0, f; f = files[i]; i++) {
+					output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+						f.size, ' bytes, last modified: ',
+						f.lastModifiedDate.toLocaleDateString(), '</li>');
+				}
+				document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+			}
+
+			function handleDragOver(evt) {
+				evt.stopPropagation();
+				evt.preventDefault();
+				evt.dataTransfer.dropEffect = 'copy'; // 显式显示这是一个副本。
+			}
+
+			// Setup the dnd listeners.
+			var dropZone = document.getElementById('drop_zone');
+			dropZone.addEventListener('dragover', handleDragOver, false);
+			dropZone.addEventListener('drop', handleFileSelect, false);
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			div {
+				width: 900px;
+				margin: 0 auto 30px;
+				word-wrap: break-word;
+			}
+		</style>
+	</head>
+
+	<body>
+		<p>
+			<p><label>请选择一个文件：</label><br /></p>
+			<p>
+				<input type="file" id="file" />
+				<input type="button" value="读取图像并显示base64位二进制" onclick="readAsDataURL()" />
+				<input type="button" value="读取二进制数据" onclick="readAsBinaryString()" />
+				<input type="button" value="读取文本文件" onclick="readAsText()" />
+			</p>
+		</p>
+		<div id="result" name="result"></div>
+		<div id="base64"></div>
+
+	</body>
+	<script type="text/javascript">
+		var result = document.getElementById("result");
+		var file = document.getElementById("file");
+
+		//判断浏览器是否支持FileReader接口 
+		if(typeof FileReader == 'undefined') {
+			result.InnerHTML = "<p>你的浏览器不支持FileReader接口！</p>";
+			//使选择控件不可操作 
+			file.setAttribute("disabled", "disabled");
+		}
+
+		function readAsDataURL() {
+			//检验是否为图像文件 
+			var file = document.getElementById("file").files[0];
+			if(!/image\/\w+/.test(file.type)) {
+				alert("请上传图片文件！");
+				return false;
+			}
+			var reader = new FileReader();
+			//将文件以Data URL形式读入页面 
+			reader.readAsDataURL(file);
+			reader.onload = function(e) {
+				var result = document.getElementById("result");
+				//显示文件 
+				result.innerHTML = '<img src="' + this.result + '" alt="" />';
+				document.getElementById("base64").innerHTML = this.result;
+			}
+		}
+
+		function readAsBinaryString() {
+			var file = document.getElementById("file").files[0];
+			var reader = new FileReader();
+			//将文件以二进制形式读入页面 
+			reader.readAsBinaryString(file);
+			reader.onload = function(f) {
+				var result = document.getElementById("result");
+				//显示文件 
+				result.innerHTML = this.result;
+			}
+		}
+
+		function readAsText() {
+			var file = document.getElementById("file").files[0];
+			var reader = new FileReader();
+			//将文件以文本形式读入页面 
+			reader.readAsText(file);
+			reader.onload = function(f) {
+				var result = document.getElementById("result");
+				//显示文件 
+				result.innerHTML = this.result;
+			}
+		}
+	</script>
+
+</html>

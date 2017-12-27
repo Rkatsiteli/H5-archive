@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	</head>
+
+	<body>
+		<input type="file" id="files" name="files[]" multiple />
+		<output id="list"></output>
+	</body>
+	<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
+	<script>
+		function handleFileSelect(evt) {
+			var files = evt.target.files; // FileList object
+
+			// files is a FileList of File objects. List some properties.
+			var output = [];
+			for(var i = 0, f; f = files[i]; i++) {
+				output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+					f.size, ' bytes, last modified: ',
+					f.lastModifiedDate.toLocaleDateString(), '</li>');
+			}
+			document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+		}
+
+		document.getElementById('files').addEventListener('change', handleFileSelect, false);
+	</script>
+
+</html>
