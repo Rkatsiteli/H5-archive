@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>单文件上传</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	</head>
+	<body>
+		<input type="file" id="upload" onchange="check(this)"/>
+	</body>
+	<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
+	<script>
+		function check(e){
+			console.log($(e)[0].files[$(e)[0].files.length-1])
+		}
+		
+		
+	</script>
+</html>
