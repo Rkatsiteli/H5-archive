@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>静态文件2</title>
+	</head>
+	<body>
+		<div id="container" class="container">
+			<section>
+				<div id="box"></div>
+				<div id="box-list"></div>
+			</section>
+		</div>
+		<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+		<script src="http://mockjs.com/dist/mock.js"></script>
+		<script>
+			$(function() {
+				var $box = $('#box');
+
+				Mock.mock('/api/user', {
+					'user|1-10': [{
+						'name': '@cname',
+						'age|1-100': 100,
+						'id|+1': 89,
+						'birthday': '@date("yyy-MM-dd")',
+						'city': '@city(true)',
+						'isMale|1': true
+					}]
+				});
+
+				$.ajax({
+					url: '/api/user',
+					dataType: 'json'
+				}).done(function(data, status, xhr) {
+					var $container = $('#box-list');
+					var $box = $('<div></div>');
+					$.each(data.user, function(index, $data) {
+						$(
+							'<ul>' +
+							'<li>姓名：' + $data.name + '</li>' +
+							'<li>年龄：' + $data.age + '</li>' +
+							'<li>id：' + $data.id + '</li>' +
+							'<li>生日：' + $data.birthday + '</li>' +
+							'<li>城市：' + $data.city + '</li>' +
+							'<li>性别：' + $data.isMale + '</li>' +
+							'</ul>'
+						).appendTo($box);
+					});
+					$container.append($box);
+				})
+			})
+		</script>
+	</body>
+
+</html>

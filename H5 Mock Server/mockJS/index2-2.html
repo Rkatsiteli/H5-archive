@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>MockJS 模板数据</title>
+	</head>
+
+	<body>
+	</body>
+	<script src="http://mockjs.com/dist/mock.js"></script>
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script>
+		Mock.mock(/\.json/, function(options) {
+			return options
+		})
+
+		$.ajax({
+			url: 'hello.json',
+			dataType: 'json'
+		}).done(function(data, status, jqXHR) {
+			$('<pre>').text(JSON.stringify(data, null, 4)).appendTo('body')
+		})
+
+		$.ajax({
+			url: 'hello.json',
+			dataType: 'json',
+			data: {
+				foo: 1,
+				bar: 2,
+				faz: 3
+			}
+		}).done(function(data, status, jqXHR) {
+			$('<pre>').text(JSON.stringify(data, null, 4)).appendTo('body')
+		})
+
+		$.ajax({
+			url: 'hello.json',
+			type: 'post',
+			dataType: 'json',
+			data: {
+				foo: 1,
+				bar: 2,
+				faz: 3
+			}
+		}).done(function(data, status, jqXHR) {
+			$('<pre>').text(JSON.stringify(data, null, 4)).appendTo('body')
+		})
+	</script>
+
+</html>

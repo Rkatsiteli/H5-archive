@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!-- 可代理跨域请求 provider配置 -->
+  <!--<routes  provider="http://10.100.142.50:9091">-->
+  <routes>
+    <!--键值对形式，用于ajax请求的时候，寻找的JSON文件-->
+    <route rule="/robot/getRechargeUrl" location="/mock/chrematistics/password.json"/>
+    
+    <!--下面为直接寻找 ip:http://10.100.142.50:9091 代理请求地址的接口 -->
+    <route rule="/robotFeedback/createFeedbackForm" />
+    <route rule="/robotFeedback/getFeedbackList" />
+    <route rule="/robotFeedback/feedbackUpLoadImage" />
+</routes>
+
+
+
+
+

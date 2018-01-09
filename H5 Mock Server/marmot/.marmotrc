@@ -1,0 +1,6 @@
+{
+  "engines": [],
+  "mock": "mock",
+  "template": "views",
+  "router": "/router/main.xml"
+}

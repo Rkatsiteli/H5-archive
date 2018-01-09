@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>ajax请求拦截demo</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	</head>
+
+	<body>
+	</body>
+	<script src="js/ajaxhook.js"></script>
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script>
+		hookAjax({
+			onreadystatechange: function(xhr) {
+				console.log("onreadystatechange called: %O", xhr)
+				//return true
+
+			},
+			onload: function(xhr) {
+				console.log("onload called")
+				xhr.responseText = "hook" + xhr.responseText;
+				//return true;
+			},
+			open: function(arg) {
+				debugger
+				console.log("open called: method:%s,url:%s,async:%s", arg[0], arg[1], arg[2])
+				arg[1] += "?hook_tag=1";
+
+			},
+			send: function(arg) {
+				console.log("send called: %O", arg[0])
+			}
+		})
+
+		$.get().done(function(d) {
+			debugger
+			console.log(d.substr(0, 30) + "...")
+			//use original XMLHttpRequest
+			console.log("unhook")
+			unHookAjax()
+			$.get().done(function(d) {
+				console.log(d.substr(0, 10))
+			})
+
+		})
+
+	</script>
+
+</html>

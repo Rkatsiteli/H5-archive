@@ -1,0 +1,15 @@
+{
+	"body": {
+		"validated": true,
+		"mobile":"18222222222"
+	},
+	"header": {
+		"errorCode": "",
+		"errorMsg": "",
+		"faceCode": "robot.discoverIndex",
+		"respCode": "1",
+		"sendSerTime": "2016-03-23 14:04:10",
+		"subErrorCode": "",
+		"token": ""
+	}
+}

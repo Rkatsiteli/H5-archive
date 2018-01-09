@@ -1,0 +1,1 @@
+在线mockJS demo地址：https://github.com/nuysoft/Mock/wiki/Mock.mock()

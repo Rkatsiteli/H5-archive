@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<router>
+    <routes>
+    	<route rule="/robot/getRobotUserAssets" location="/mock/chrematistics/login.json"/>
+    </routes>
+    <import src="data.xml"/>
+</router>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+		<title>测试MarMot服务器</title>
+		<style>
+			#write {
+				width: 50%;
+				height: 100%;
+				min-height: 500px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<h1>测试MarMot服务</h1>
+		<p>结果如下：</p>
+		<p><textarea id="write"></textarea></p>
+	</body>
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script>
+		$.ajax({
+			url: "/robot/getRobotUserAssets",
+			type: "GET",
+			dataType: "json",
+			success: function(data) {
+				console.log(data)
+				$("#write").text(JSON.stringify(data))
+			}
+		});
+	</script>
+
+</html>
