@@ -83,9 +83,16 @@
 			}
 		}
 
-		setTimeout(function() {
-			populateVoiceList();
-		}, 0)
+		function init(){
+			window.speechSynthesis.getVoices()
+		}
+
+		window.onload = function() {
+			init();
+			setTimeout(function() {
+				populateVoiceList();
+			}, 0)
+		}
 	</script>
 
 </html>
